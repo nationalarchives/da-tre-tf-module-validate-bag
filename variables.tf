@@ -59,3 +59,8 @@ variable "tre_dlq_alerts_lambda_function_name" {
   description = "TRE DLQ Alerts Lambda Function Name"
   type        = string
 }
+
+variable "var.tre_permission_boundary_arn" {
+  description = "ARN of the TRE permission boundary policy"
+  type = string
+}
