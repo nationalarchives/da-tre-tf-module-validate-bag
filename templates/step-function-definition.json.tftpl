@@ -1,0 +1,248 @@
+{
+  "Comment": "TRE Validate BagIt Flow",
+  "StartAt": "BagIt Checksum Validation",
+  "States": {
+    "BagIt Checksum Validation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "${arn_lambda_vb_bagit_checksum_validation}"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "BagIt Checksum Validation Output Handler",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "Next": "BagIt Error -> Slack"
+        }
+      ]
+    },
+    "BagIt Error -> Slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "Message": {
+          "Execution.$": "$$.Execution.Name",
+          "StateMachine.$": "$$.StateMachine.Name",
+          "Status": "error",
+          "ErrorMessage.$": "$.Cause",
+          "Event": "Lambda Error (BagIt)"
+        }
+      },
+      "Next": "BagIt Error"
+    },
+    "BagIt Error": {
+      "Type": "Fail"
+    },
+    "BagIt Unhandled Event -> Slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "Message": {
+          "Execution.$": "$$.Execution.Name",
+          "StateMachine.$": "$$.StateMachine.Name",
+          "Status": "error",
+          "ErrorMessage.$": "$.producer.event-name",
+          "Event": "Invalid event-name (BagIt)"
+        }
+      },
+      "Next": "BagIt Checksum Unhandled Event"
+    },
+    "BagIt Checksum Unhandled Event": {
+      "Type": "Fail"
+    },
+    "BagIt Checksum Validation Output Handler": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.producer.event-name",
+          "StringEquals": "bagit-received",
+          "Next": "Files Checksum Validation",
+          "Comment": "bagit-received"
+        },
+        {
+          "Variable": "$.producer.event-name ",
+          "StringEquals": "bagit-validation-error",
+          "Next": "SNS tre-internal",
+          "Comment": "bagit-validation-error"
+        }
+      ],
+      "Default": "BagIt Unhandled Event -> Slack"
+    },
+    "Files Checksum Validation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "${arn_lambda_vb_files_checksum_validation}"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "Files Checksum Validation Output Handler",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "Next": "Files Lambda Error -> Slack"
+        }
+      ]
+    },
+    "Files Lambda Error -> Slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "Message": {
+          "Execution.$": "$$.Execution.Name",
+          "StateMachine.$": "$$.StateMachine.Name",
+          "Status": "error",
+          "ErrorMessage.$": "$.Cause",
+          "Event": "Lambda Error (Files)"
+        }
+      },
+      "Next": "Files Checksum Validation Failed"
+    },
+    "Files Checksum Validation Output Handler": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.producer.event-name",
+          "StringEquals": "bagit-validated",
+          "Comment": "bagit-validated",
+          "Next": "SNS tre-internal"
+        },
+        {
+          "Variable": "$.producer.event-name",
+          "StringEquals": "bagit-validation-error",
+          "Next": "SNS tre-internal",
+          "Comment": "bagit-validation-error"
+        }
+      ],
+      "Default": "Files Unhandled Event -> Slack"
+    },
+    "Files Unhandled Event -> Slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "Message": {
+          "Execution.$": "$$.Execution.Name",
+          "StateMachine.$": "$$.StateMachine.Name",
+          "Status": "error",
+          "ErrorMessage.$": "$.producer.event-name",
+          "Event": "Invalid event-name (Files)"
+        }
+      },
+      "Next": "Files Checksum Unhandled Event"
+    },
+    "Files Checksum Unhandled Event": {
+      "Type": "Fail"
+    },
+    "SNS tre-internal": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "MessageAttributes": {
+          "environment": {
+            "DataType": "String",
+            "StringValue.$": "$.producer.environment"
+          },
+          "name": {
+            "DataType": "String",
+            "StringValue.$": "$.producer.name"
+          },
+          "process": {
+            "DataType": "String",
+            "StringValue.$": "$.producer.process"
+          },
+          "type": {
+            "DataType": "String",
+            "StringValue.$": "$.producer.type"
+          },
+          "event-name": {
+            "DataType": "String",
+            "StringValue.$": "$.producer.event-name"
+          }
+        },
+        "Message.$": "$",
+        "TopicArn": "${arn_sns_topic_validate_bagit_out}"
+      },
+      "Next": "Choice",
+      "ResultPath": null
+    },
+    "Choice": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.producer.event-name",
+          "StringEquals": "bagit-validated",
+          "Comment": "bagit-validated",
+          "Next": "bagit-validated"
+        },
+        {
+          "Variable": "$.producer.event-name",
+          "StringEquals": "bagit-validation-error",
+          "Comment": "bagit-validation-error",
+          "Next": "bagit-validation-error"
+        }
+      ],
+      "Default": "Unhandled Event -> Slack"
+    },
+    "bagit-validation-error": {
+      "Type": "Succeed"
+    },
+    "bagit-validated": {
+      "Type": "Succeed"
+    },
+    "Unhandled Event -> Slack": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "Message": {
+          "Execution.$": "$$.Execution.Name",
+          "StateMachine.$": "$$.StateMachine.Name",
+          "Status": "error",
+          "ErrorMessage.$": "$.producer.event-name",
+          "Event": "Invalid event-name (SNS tre-internal)"
+        }
+      },
+      "Next": "Unhandled Event"
+    },
+    "Unhandled Event": {
+      "Type": "Fail"
+    },
+    "Files Checksum Validation Failed": {
+      "Type": "Fail"
+    }
+  }
+}
