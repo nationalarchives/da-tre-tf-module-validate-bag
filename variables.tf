@@ -28,9 +28,8 @@ variable "vb_version" {
 variable "vb_image_versions" {
   description = "Latest version of Images for Lambda Functions"
   type = object({
-    tre_sqs_sf_trigger    = string
-    tre_vb_validate_bagit = string
-
+    tre_sqs_sf_trigger          = string
+    tre_vb_validate_bagit       = string
     tre_vb_validate_bagit_files = string
   })
 }
@@ -62,5 +61,15 @@ variable "tre_dlq_alerts_lambda_function_name" {
 
 variable "tre_permission_boundary_arn" {
   description = "ARN of the TRE permission boundary policy"
+  type = string
+}
+
+variable "ecr_uri_host" {
+  description = "The hostname part of the management account ECR repository; e.g. ACCOUNT.dkr.ecr.REGION.amazonaws.com"
+  type = string
+}
+
+variable "ecr_uri_repo_prefix" {
+  description = "The prefix for Docker image repository names to use; e.g. foo/ in ACCOUNT.dkr.ecr.REGION.amazonaws.com/foo/tre-bar"
   type = string
 }
