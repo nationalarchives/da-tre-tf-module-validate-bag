@@ -59,14 +59,6 @@ data "aws_iam_policy_document" "validate_bagit_machine_policies" {
       aws_lambda_function.vb_files_checksum_validation.arn
     ]
   }
-
-  statement {
-    actions = ["sqs:SendMessage"]
-    effect  = "Allow"
-    resources = [
-      var.tdr_sqs_retry_arn
-    ]
-  }
 }
 
 # Lambda Roles

@@ -33,16 +33,6 @@ variable "common_tre_slack_alerts_topic_arn" {
   type        = string
 }
 
-variable "tdr_sqs_retry_url" {
-  description = "The TDR retry SQS Queue URL"
-  type        = string
-}
-
-variable "tdr_sqs_retry_arn" {
-  description = "The TDR retry SQS Queue ARN"
-  type        = string
-}
-
 variable "common_tre_internal_topic_arn" {
   description = "The TRE internal SNS topic ARN"
   type        = string
