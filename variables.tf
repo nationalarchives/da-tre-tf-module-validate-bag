@@ -8,12 +8,6 @@ variable "prefix" {
   type        = string
 }
 
-
-variable "account_id" {
-  description = "Account ID where Image for the Lambda function will be"
-  type        = string
-}
-
 variable "tre_data_bucket" {
   description = "TRE Data Bucket Name"
   type        = string
@@ -36,16 +30,6 @@ variable "vb_image_versions" {
 
 variable "common_tre_slack_alerts_topic_arn" {
   description = "ARN of the Common TRE Slack Alerts SNS Topic"
-  type        = string
-}
-
-variable "tdr_sqs_retry_url" {
-  description = "The TDR retry SQS Queue URL"
-  type        = string
-}
-
-variable "tdr_sqs_retry_arn" {
-  description = "The TDR retry SQS Queue ARN"
   type        = string
 }
 
