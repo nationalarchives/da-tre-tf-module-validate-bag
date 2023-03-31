@@ -1,8 +1,8 @@
 # Step Function Roles and Policies
 
 resource "aws_iam_role" "validate_bagit" {
-  name               = "${local.step_function_name}-role"
-  assume_role_policy = data.aws_iam_policy_document.validate_bagit_assume_role_policy.json
+  name                 = "${local.step_function_name}-role"
+  assume_role_policy   = data.aws_iam_policy_document.validate_bagit_assume_role_policy.json
   permissions_boundary = var.tre_permission_boundary_arn
   inline_policy {
     name   = "${local.step_function_name}-policies"
@@ -64,8 +64,8 @@ data "aws_iam_policy_document" "validate_bagit_machine_policies" {
 # Lambda Roles
 
 resource "aws_iam_role" "validate_bagit_lambda_invoke_role" {
-  name               = "${local.step_function_name}-lambda-invoke-role"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  name                 = "${local.step_function_name}-lambda-invoke-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
   permissions_boundary = var.tre_permission_boundary_arn
 }
 
@@ -75,8 +75,8 @@ resource "aws_iam_role_policy_attachment" "validate_bagit_lambda_role_policy" {
 }
 
 resource "aws_iam_role" "vb_trigger_lambda" {
-  name               = "${var.env}-${var.prefix}-vb-trigger-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  name                 = "${var.env}-${var.prefix}-vb-trigger-lambda-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
   permissions_boundary = var.tre_permission_boundary_arn
   inline_policy {
     name   = "${var.env}-${var.prefix}-vb-trigger"
