@@ -51,14 +51,14 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.producer.event-name",
-          "StringEquals": "bagit-validated",
+          "Variable": "$.properties.messageType",
+          "StringEquals": "uk.gov.nationalarchives.tre.messages.bag.validate.BagValidate",
           "Comment": "bagit-validated",
           "Next": "SNS tre-internal"
         },
         {
-          "Variable": "$.producer.event-name",
-          "StringEquals": "bagit-validation-error",
+          "Variable": "$.properties.messageType",
+          "StringEquals": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
           "Next": "SNS tre-internal",
           "Comment": "bagit-validation-error"
         }
@@ -87,28 +87,6 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "MessageAttributes": {
-          "environment": {
-            "DataType": "String",
-            "StringValue.$": "$.producer.environment"
-          },
-          "name": {
-            "DataType": "String",
-            "StringValue.$": "$.producer.name"
-          },
-          "process": {
-            "DataType": "String",
-            "StringValue.$": "$.producer.process"
-          },
-          "type": {
-            "DataType": "String",
-            "StringValue.$": "$.producer.type"
-          },
-          "event-name": {
-            "DataType": "String",
-            "StringValue.$": "$.producer.event-name"
-          }
-        },
         "Message.$": "$",
         "TopicArn": "${arn_sns_topic_validate_bagit_out}"
       },
@@ -119,14 +97,14 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.producer.event-name",
-          "StringEquals": "bagit-validated",
+          "Variable": "$.properties.messageType",
+          "StringEquals": "uk.gov.nationalarchives.tre.messages.bag.validate.BagValidate",
           "Comment": "bagit-validated",
           "Next": "bagit-validated"
         },
         {
-          "Variable": "$.producer.event-name",
-          "StringEquals": "bagit-validation-error",
+          "Variable": "$.properties.messageType",
+          "StringEquals": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
           "Comment": "bagit-validation-error",
           "Next": "bagit-validation-error"
         }
