@@ -74,6 +74,28 @@ resource "aws_iam_role_policy_attachment" "validate_bagit_lambda_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSOpsWorksCloudWatchLogs"
 }
 
+data "aws_iam_policy_document" "validate_bagit_lambda_kms_policy_data" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Decrypt"
+    ]
+    resources = [var.kms_arn_for_sample_data]
+  }
+}
+
+resource "aws_iam_policy" "validate_bagit_lambda_kms_policy" {
+  name        = "${var.env}-${var.prefix}-validate_bagit-s3-key"
+  description = "The KMS key policy for validate bagit lambda"
+  policy      = data.aws_iam_policy_document.validate_bagit_lambda_kms_policy_data.json
+}
+
+resource "aws_iam_role_policy_attachment" "validate_bagit_lambda_key" {
+  role       = aws_iam_role.validate_bagit_lambda_invoke_role.name
+  policy_arn = aws_iam_policy.validate_bagit_lambda_kms_policy.arn
+}
+
 resource "aws_iam_role" "vb_trigger_lambda" {
   name                 = "${var.env}-${var.prefix}-vb-trigger-lambda-role"
   assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
