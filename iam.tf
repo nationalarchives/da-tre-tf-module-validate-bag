@@ -78,8 +78,7 @@ data "aws_iam_policy_document" "validate_bagit_lambda_kms_policy_data" {
   statement {
     effect = "Allow"
     actions = [
-      "kms:GenerateDataKey",
-      "kms:Decrypt"
+      "kms:*"
     ]
     resources = [var.kms_arn_for_sample_data]
   }
