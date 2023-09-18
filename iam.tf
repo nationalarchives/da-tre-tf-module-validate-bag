@@ -95,6 +95,8 @@ resource "aws_iam_role_policy_attachment" "validate_bagit_lambda_key" {
   policy_arn = aws_iam_policy.validate_bagit_lambda_kms_policy.arn
 }
 
+
+
 resource "aws_iam_role" "vb_trigger_lambda" {
   name                 = "${var.env}-${var.prefix}-vb-trigger-lambda-role"
   assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
@@ -148,3 +150,32 @@ data "aws_iam_policy_document" "tre_vb_queue_in" {
     ]
   }
 }
+
+
+resource "aws_iam_role_policy_attachment" "tdr_s3_bucket" {
+  role       = aws_iam_role.validate_bagit_lambda_invoke_role.name
+  policy_arn = aws_iam_policy.s3_tdr_bucket_access_policy.arn
+}
+
+resource "aws_iam_policy" "s3_tdr_bucket_access_policy" {
+  name        = "${var.env}-${var.prefix}-tdr-s3-policy"
+  description = "The s3 policy to allow lambda to read from the tdr transfer bucket"
+  policy      = data.aws_iam_policy_document.s3_tdr_bucket_access_policy.json
+}
+
+data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
+  statement {
+    Action = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    effect  = "Allow"
+    resources = [
+      var.tre_data_bucket
+    ]
+  }
+}
+
+
+
+
