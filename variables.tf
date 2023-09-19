@@ -62,3 +62,8 @@ variable "kms_arn_for_sample_data" {
   description = "arn of kms for sample data bucket used in tests"
   type        = string
 }
+
+variable "s3_export_bucket_arn" {
+  description = "tdr s3 export bucket arn"
+  type        = string
+}
