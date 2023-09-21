@@ -171,7 +171,8 @@ data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
     ]
     effect  = "Allow"
     resources = [
-      var.s3_export_bucket_arn
+       var.s3_export_bucket_arn,
+      "${var.s3_export_bucket_arn}/*"
     ]
   }
 }
