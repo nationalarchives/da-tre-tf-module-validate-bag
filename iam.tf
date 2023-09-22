@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "validate_bagit_lambda_kms_policy_data" {
     actions = [
       "kms:*"
     ]
-    resources = [var.kms_arn_for_sample_data]
+    resources = [var.tdr_s3_export_bucket_kms_arn]
   }
 }
 
@@ -171,7 +171,8 @@ data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
     ]
     effect  = "Allow"
     resources = [
-      var.s3_export_bucket_arn
+      var.tdr_s3_export_bucket_arn,
+      "${var.tdr_s3_export_bucket_arn}/*"
     ]
   }
 }
