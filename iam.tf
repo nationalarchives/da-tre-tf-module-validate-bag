@@ -164,16 +164,19 @@ resource "aws_iam_policy" "s3_tdr_bucket_access_policy" {
 }
 
 data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
-  statement {
-    actions = [
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
-    effect  = "Allow"
-    resources = [
-      var.tdr_s3_export_bucket_arn,
-      "${var.tdr_s3_export_bucket_arn}/*"
-    ]
+  dynamic "statement" {
+    for_each = var.tdr_s3_export_bucket_arns
+    content {
+      actions = [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ]
+      effect  = "Allow"
+      resources = [
+         statement.value,
+        "${statement.value}/*"
+      ]
+    }
   }
 }
 
