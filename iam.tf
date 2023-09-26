@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "validate_bagit_lambda_kms_policy_data" {
     actions = [
       "kms:*"
     ]
-    resources = [var.tdr_s3_export_bucket_kms_arn]
+    resources = dr_s3_export_bucket_kms_arns
   }
 }
 
