@@ -60,7 +60,7 @@ variable "ecr_uri_repo_prefix" {
 
 variable "tdr_s3_export_bucket_kms_arn" {
   description = "arn of kms for sample data bucket used in tests"
-  type        = list (string)
+  type        = string
 }
 
 variable "tdr_s3_export_bucket_arns" {
