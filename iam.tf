@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "validate_bagit_lambda_kms_policy_data" {
     actions = [
       "kms:*"
     ]
-    resources = [var.tdr_s3_export_bucket_kms_arn]
+    resources = var.tdr_s3_export_bucket_kms_arns
   }
 }
 
@@ -164,16 +164,19 @@ resource "aws_iam_policy" "s3_tdr_bucket_access_policy" {
 }
 
 data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
-  statement {
-    actions = [
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
-    effect  = "Allow"
-    resources = [
-      var.tdr_s3_export_bucket_arn,
-      "${var.tdr_s3_export_bucket_arn}/*"
-    ]
+  dynamic "statement" {
+    for_each = var.tdr_s3_export_bucket_arns
+    content {
+      actions = [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ]
+      effect  = "Allow"
+      resources = [
+        statement.value,
+        "${statement.value}/*"
+      ]
+    }
   }
 }
 
