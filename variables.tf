@@ -33,8 +33,8 @@ variable "common_tre_slack_alerts_topic_arn" {
   type        = string
 }
 
-variable "common_tre_internal_topic_arn" {
-  description = "The TRE internal SNS topic ARN"
+variable "common_da_eventbus_topic_arn" {
+  description = "The TRE eventbus SNS topic ARN"
   type        = string
 }
 
