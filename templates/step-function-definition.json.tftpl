@@ -54,12 +54,12 @@
           "Variable": "$.properties.messageType",
           "StringEquals": "uk.gov.nationalarchives.tre.messages.bag.validate.BagValidate",
           "Comment": "bagit-validated",
-          "Next": "SNS da-eventbus"
+          "Next": "SNS Notification Topic"
         },
         {
           "Variable": "$.properties.messageType",
           "StringEquals": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
-          "Next": "SNS da-eventbus",
+          "Next": "SNS Notification Topic",
           "Comment": "bagit-validation-error"
         }
       ],
@@ -83,7 +83,7 @@
     "Files Checksum Unhandled Event": {
       "Type": "Fail"
     },
-    "SNS da-eventbus": {
+    "SNS Notification Topic": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
@@ -127,7 +127,7 @@
           "StateMachine.$": "$$.StateMachine.Name",
           "Status": "error",
           "ErrorMessage.$": "$.properties.function",
-          "Event": "Invalid event-name (SNS da-eventbus)"
+          "Event": "Invalid event-name (SNS Notification Topic)"
         }
       },
       "Next": "Unhandled Event"
