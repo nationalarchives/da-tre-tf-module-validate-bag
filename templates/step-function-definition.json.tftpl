@@ -1,7 +1,18 @@
 {
   "Comment": "TRE Validate BagIt Flow",
-  "StartAt": "Files Checksum Validation",
+  "StartAt": "Is Validation Required?",
   "States": {
+    "Is Validation Required?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.parameters.consignmentType",
+          "StringEquals": "COURT_DOCUMENT",
+          "Next": "Files Checksum Validation"
+        }
+      ],
+      "Default": "Validation Not Required"
+    },
     "Files Checksum Validation": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
@@ -137,6 +148,9 @@
     },
     "Files Checksum Validation Failed": {
       "Type": "Fail"
+    },
+    "Validation Not Required": {
+      "Type": "Succeed"
     }
   }
 }
