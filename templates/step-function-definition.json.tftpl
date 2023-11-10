@@ -39,21 +39,31 @@
           "ErrorEquals": [
             "States.TaskFailed"
           ],
-          "Next": "Files Lambda Error -> Slack"
+          "ResultPath": "$.errorInfo",
+          "Next": "Publish TRE Error"
         }
       ]
     },
-    "Files Lambda Error -> Slack": {
+    "Publish TRE Error": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
         "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
         "Message": {
-          "Execution.$": "$$.Execution.Name",
-          "StateMachine.$": "$$.StateMachine.Name",
-          "Status": "error",
-          "ErrorMessage.$": "$.Cause",
-          "Event": "Lambda Error (Files)"
+          "properties": {
+            "messageType": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
+            "function": "tre-validate-bagit",
+            "producer": "TRE",
+            "executionId.$": "$$.Execution.Name",
+            "parentExecutionId": null,
+            "timestamp.$": "$$.State.EnteredTime"
+          },
+          "parameters": {
+            "status": "TRE_ERROR",
+            "originator": "TDR",
+            "reference.$": "$.parameters.reference",
+            "errors.$": "$.errorInfo"
+          }
         }
       },
       "Next": "Files Checksum Validation Failed"
