@@ -48,7 +48,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "TopicArn": "${arn_sns_topic_validate_bagit_out}",
         "Message": {
           "properties": {
             "messageType": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
