@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'feature-DTE-864-tag-on-merge-to-main'
   workflow_dispatch:
 jobs:
   push-next-tag:
