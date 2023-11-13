@@ -5,5 +5,5 @@ on:
   workflow_dispatch:
 jobs:
   push-next-tag:
-    uses: nationalarchives/da-tre-github-actions/.github/workflows/get-and-tag-next-version.yml@feature-DTE-864-make-workflow-reusable
+    uses: nationalarchives/da-tre-github-actions/.github/workflows/get-and-tag-next-version.yml@0.0.23
     
