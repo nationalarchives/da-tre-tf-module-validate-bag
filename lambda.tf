@@ -28,7 +28,7 @@ resource "aws_lambda_function" "vb_files_checksum_validation" {
   package_type  = "Image"
   function_name = local.lambda_name_bag_files_validation
   role          = aws_iam_role.validate_bagit_lambda_invoke_role.arn
-  timeout       = 30
+  timeout       = 300
 
   environment {
     variables = {
