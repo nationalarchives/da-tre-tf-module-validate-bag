@@ -90,13 +90,22 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "TopicArn": "${arn_sns_topic_validate_bagit_out}",
         "Message": {
-          "Execution.$": "$$.Execution.Name",
-          "StateMachine.$": "$$.StateMachine.Name",
-          "Status": "error",
-          "ErrorMessage.$": "$.properties.function",
-          "Event": "Invalid event-name (Files)"
+          "properties": {
+            "messageType": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
+            "function": "tre-validate-bagit",
+            "producer": "TRE",
+            "executionId.$": "$$.Execution.Name",
+            "parentExecutionId": null,
+            "timestamp.$": "$$.State.EnteredTime"
+          },
+          "parameters": {
+            "status": "TRE_ERROR",
+            "originator": "TDR",
+            "reference.$": "$.parameters.reference",
+            "errors.$": "$.properties.function"
+          }
         }
       },
       "Next": "Files Checksum Unhandled Event"
@@ -142,13 +151,22 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "${arn_sns_topic_tre_slack_alerts}",
+        "TopicArn": "${arn_sns_topic_validate_bagit_out}",
         "Message": {
-          "Execution.$": "$$.Execution.Name",
-          "StateMachine.$": "$$.StateMachine.Name",
-          "Status": "error",
-          "ErrorMessage.$": "$.properties.function",
-          "Event": "Invalid event-name (SNS Notification Topic)"
+          "properties": {
+            "messageType": "uk.gov.nationalarchives.tre.messages.treerror.TreError",
+            "function": "tre-validate-bagit",
+            "producer": "TRE",
+            "executionId.$": "$$.Execution.Name",
+            "parentExecutionId": null,
+            "timestamp.$": "$$.State.EnteredTime"
+          },
+          "parameters": {
+            "status": "TRE_ERROR",
+            "originator": "TDR",
+            "reference.$": "$.parameters.reference",
+            "errors.$": "$.properties.function"
+          }
         }
       },
       "Next": "Unhandled Event"

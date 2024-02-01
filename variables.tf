@@ -28,11 +28,6 @@ variable "vb_image_versions" {
   })
 }
 
-variable "common_tre_slack_alerts_topic_arn" {
-  description = "ARN of the Common TRE Slack Alerts SNS Topic"
-  type        = string
-}
-
 variable "notification_topic_arn" {
   description = "The notification SNS topic ARN"
   type        = string

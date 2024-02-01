@@ -5,7 +5,6 @@ resource "aws_sfn_state_machine" "validate_bagit" {
     arn_lambda_vb_bagit_checksum_validation = aws_lambda_function.vb_bagit_checksum_validation.arn
     arn_lambda_vb_files_checksum_validation = aws_lambda_function.vb_files_checksum_validation.arn
     arn_sns_topic_validate_bagit_out        = var.notification_topic_arn
-    arn_sns_topic_tre_slack_alerts          = var.common_tre_slack_alerts_topic_arn
   })
   logging_configuration {
     log_destination        = "${aws_cloudwatch_log_group.validate_bagit.arn}:*"
