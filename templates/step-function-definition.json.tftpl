@@ -7,11 +7,11 @@
       "Choices": [
         {
           "Variable": "$.parameters.consignmentType",
-          "StringEquals": "STANDARD",
-          "Next": "Validation Not Required"
+          "StringEquals": "JUDGMENT",
+          "Next": "Files Checksum Validation"
         }
       ],
-      "Default": "Files Checksum Validation"
+      "Default": "Validation Not Required"
     },
     "Files Checksum Validation": {
       "Type": "Task",
