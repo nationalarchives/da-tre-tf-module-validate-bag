@@ -55,7 +55,6 @@ data "aws_iam_policy_document" "validate_bagit_machine_policies" {
     effect  = "Allow"
     actions = ["lambda:InvokeFunction"]
     resources = [
-      aws_lambda_function.vb_bagit_checksum_validation.arn,
       aws_lambda_function.vb_files_checksum_validation.arn
     ]
   }
@@ -171,7 +170,7 @@ data "aws_iam_policy_document" "s3_tdr_bucket_access_policy" {
         "s3:GetObject",
         "s3:ListBucket"
       ]
-      effect  = "Allow"
+      effect = "Allow"
       resources = [
         statement.value,
         "${statement.value}/*"

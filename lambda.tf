@@ -1,27 +1,3 @@
-resource "aws_lambda_function" "vb_bagit_checksum_validation" {
-  image_uri     = "${var.ecr_uri_host}/${var.ecr_uri_repo_prefix}${var.prefix}-vb-bag-validation:${var.vb_image_versions.tre_vb_validate_bagit}"
-  package_type  = "Image"
-  function_name = local.lambda_name_bag_validation
-  role          = aws_iam_role.validate_bagit_lambda_invoke_role.arn
-  timeout       = 60
-
-  environment {
-    variables = {
-      "TRE_S3_BUCKET"            = var.tre_data_bucket
-      "TRE_SF_VERSION"           = var.vb_version
-      "TRE_LAMBDA_VERSIONS"      = jsonencode(var.vb_image_versions)
-      "TRE_SYSTEM_NAME"          = upper(var.prefix)
-      "TRE_PROCESS_NAME"         = local.step_function_name
-      "TRE_STEP_FUNCTION_NAME"   = local.step_function_name
-      "TRE_LAMBDA_FUNCTION_NAME" = local.lambda_name_bag_validation
-      "TRE_ENVIRONMENT"          = var.env
-    }
-  }
-
-  tags = {
-    ApplicationType = "Python"
-  }
-}
 
 resource "aws_lambda_function" "vb_files_checksum_validation" {
   image_uri     = "${var.ecr_uri_host}/${var.ecr_uri_repo_prefix}${var.prefix}-vb-bag-files-validation:${var.vb_image_versions.tre_vb_validate_bagit_files}"
