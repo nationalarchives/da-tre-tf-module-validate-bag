@@ -56,11 +56,4 @@ The Step Function performs the following tasks:
 - AWS CLI configured with appropriate permissions.
 - An existing SNS topic ARN for notifications.
 - Lambda functions deployed for validation and DLQ alerts.
-
-## Deployment
-
-1. Clone this repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
    
